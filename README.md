@@ -1,30 +1,13 @@
-# interns-db
+#  ELK stack demo app for checking metrics and indices
 
-This is a study case on how to approach the container creation and architecture for FastAPI webapp as a DevOps engineer using an nginx reverse proxy to the Python backend and a postgres DB for persisting data.
+to install it simply do
 
-This app works in conjunction with repos
-
-*interns-backend-api
-*interns-webserver
-
-1. Interns DB should get started first
-2. Interns Backend API should get started second
-3. Lastly, we start interns Webserver
-
-
-### Step #1 to run Interns DB
-1. First start minikube on your local by typing
-```
-minikube start
+```bash
+helm upgrade --install elk-demo .
 ```
 
-2. Then, run a minikube mount on the data directory from this same repo :
+If backend doesn't work
+
 ```
-cd data
-DIR=$(pwd)
-minikube mount $DIR:$DIR
-```
-3. Deploy kubernetes deployment and services
-```
-kubectl apply -f .
+kubectl rollout restart deployment elk-demo-backend-api -n elk-demo
 ```
