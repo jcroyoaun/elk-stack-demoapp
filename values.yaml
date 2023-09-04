@@ -1,0 +1,4 @@
+appName: elk-demo
+namespace: elk-demo
+databaseName: elk_demo_db
+
