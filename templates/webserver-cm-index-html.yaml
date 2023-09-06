@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: html-index-cm
+  namespace: {{ .Values.namespace }}
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Learner Management System</title>
+      <script>
+        document.addEventListener("DOMContentLoaded", function(){
+          const updateForm = document.getElementById('updateForm');
+          const createForm = document.getElementById('createForm');
+          const deleteForm = document.getElementById('deleteForm');
+
+          // PUT method
+          updateForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(updateForm);
+            const id_learner = parseInt(formData.get('id_learner'), 10);
+            const first_name = formData.get('first_name');
+            const last_name = formData.get('last_name');
+            
+            fetch(`/api/v1/learners/${id_learner}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                id_learner,
+                first_name,
+                last_name
+              })
+            }).then(response => response.json()).then(data => console.log(data));
+          });
+
+          // POST method
+          createForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(createForm);
+            const id_learner = parseInt(formData.get('id_learner'), 10);
+            const first_name = formData.get('first_name');
+            const last_name = formData.get('last_name');
+            
+            fetch(`/api/v1/learners`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                id_learner,
+                first_name,
+                last_name
+              })
+            }).then(response => response.json()).then(data => console.log(data));
+          });
+
+          // DELETE method
+          deleteForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(deleteForm);
+            const id_learner = parseInt(formData.get('id_learner'), 10);
+            
+            fetch(`/api/v1/learners/${id_learner}`, {
+              method: 'DELETE',
+              headers: {
+                'Accept': 'application/json'
+              }
+            }).then(response => response.json()).then(data => console.log(data));
+          });
+        });
+      </script>
+    </head>
+    <body>
+    <h1>Learner Management System</h1>
+
+    <h2>Create a new learner</h2>
+    <form id="createForm" method="post">
+      <input type="text" name="id_learner" placeholder="ID learner">
+      <input type="text" name="first_name" placeholder="First name">
+      <input type="text" name="last_name" placeholder="Last name">
+      <button type="submit">Create</button>
+    </form>
+
+    <h2>List all learners</h2>
+    <a href="/api/v1/learners">List learners</a>
+
+    <h2>Delete a learner</h2>
+    <form id="deleteForm">
+      <input type="text" name="id_learner" placeholder="ID learner">
+      <button type="submit">Delete</button>
+    </form>
+
+    <h2>Update a learner</h2>
+    <form id="updateForm">
+      <input type="text" name="id_learner" placeholder="ID learner">
+      <input type="text" name="first_name" placeholder="First name">
+      <input type="text" name="last_name" placeholder="Last name">
+      <button type="submit">Update</button>
+    </form>
+
+    </body>
+    </html>

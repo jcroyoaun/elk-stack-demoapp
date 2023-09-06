@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Learner Management System</title>
+</head>
+<body>
+
+<h1>Learner Management System</h1>
+
+<h2>Create a new learner</h2>
+<form action="/api/v1/learners" method="post">
+  <input type="text" name="id_learner" placeholder="ID learner">
+  <input type="text" name="first_name" placeholder="First name">
+  <input type="text" name="last_name" placeholder="Last name">
+  <button type="submit">Create</button>
+</form>
+
+<h2>List all learners</h2>
+<a href="/api/v1/learners">List learners</a>
+
+<h2>Delete a learner</h2>
+<form action="/api/v1/learners/{learner_id}" method="delete">
+  <input type="text" name="learner_id" placeholder="ID learner">
+  <button type="submit">Delete</button>
+</form>
+
+<h2>Update a learner</h2>
+<form action="/api/v1/learners/{learner_id}" method="put">
+  <input type="text" name="id_learner" placeholder="ID learner">
+  <input type="text" name="first_name" placeholder="First name">
+  <input type="text" name="last_name" placeholder="Last name">
+  <button type="submit">Update</button>
+</form>
+
+</body>
+</html>

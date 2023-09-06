@@ -1,16 +1,15 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ .Values.appName }}-backend-service
-  namespace: {{ .Values.namespace }}
+  name: {{ .Values.appName }}-backend-metrics
+  namespace: {{ .Values.namespace }} 
   labels:
     app: {{ .Values.appName }}-backend-api
 spec:
   selector:
     app: {{ .Values.appName }}-backend-api
   ports:
-  - port: 8000 
+  - port: 8001
     protocol: TCP
-    targetPort: 8000
-  type: ClusterIP 
-
+    targetPort: 8001
+  type: ClusterIP

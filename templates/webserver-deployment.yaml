@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.appName }}-webserver
+  namespace: {{ .Values.namespace }} 
+  labels:
+    app: {{ .Values.appName }}-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}-webserver
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}-webserver
+    spec:
+      volumes:
+        - name: reverse-proxy-volume
+          configMap:
+            name: reverse-proxy-cm
+        - name: html-index-volume
+          configMap:
+            name: html-index-cm
+      initContainers:
+      - name: wait-for-backend
+        image: curlimages/curl:latest
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until [[ $(curl -o /dev/null -s -w "%{http_code}" http://{{ .Values.appName }}-backend-service.{{ .Values.namespace }}.svc.cluster.local:8000/) -eq 200 ]]; do
+            echo "waiting for backend";
+            sleep 2;
+          done;
+      containers:
+      - name: {{ .Values.appName }}-webserver-image
+        image: nginx
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        volumeMounts:
+        - name: reverse-proxy-volume
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        - name: html-index-volume
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html

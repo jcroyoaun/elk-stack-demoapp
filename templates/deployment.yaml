@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  {{ .Values.appName }}-backend-api
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.appName }}-backend-api
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}-backend-api
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}-backend-api
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: postgres:13  # Change to your PostgreSQL version
+        command:
+        - 'sh'
+        - '-c'
+        - >
+          until pg_isready -h {{ .Values.appName }}-db-service.{{ .Values.namespace }}.svc.cluster.local -p 5432; do
+            echo "waiting for database";
+            sleep 2;
+          done; 
+      containers:
+      - name: {{ .Values.appName }}-backend-image
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.containerPort }}
+          protocol: TCP
+        env:
+        - name: DB_SERVICE_NAME
+          value: "{{ .Values.appName }}-db-service"
+        - name: DATABASE_NAME
+          value: {{ .Values.databaseName }}
+        - name: DB_HOST
+          value: {{ .Values.dbServiceName }}
