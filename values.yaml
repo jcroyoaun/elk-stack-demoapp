@@ -1,4 +1,7 @@
-appName: elk-demo
 namespace: elk-demo
+replicas: 1
+image: jcroyoaun/elk-sample-app:latest 
+imagePullPolicy: Always
+containerPort: 8000
+appName: elk-demo 
 databaseName: elk_demo_db
-
